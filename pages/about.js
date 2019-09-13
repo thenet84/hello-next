@@ -3,9 +3,8 @@ import Layout from '../components/Layout';
 const About = () => (
     <div>
         <Layout>
-            
+            <p>This is about page</p>
         </Layout>
-        <p>This is about page</p>
     </div>
 );
 
