@@ -1,26 +1,32 @@
 import Link  from 'next/link';
+import fetch from 'isomorphic-unfetch';
 
 import Layout from '../components/Layout';
 
-const PostLink = props => (
-    <li>
-        <Link href="/p/[id]" as={`/p/${props.id}`}>
-            <a>{props.id}</a>
-        </Link>
-    </li>
+const Index = props => (
+    <Layout>
+        <h1>Batman TV shows</h1>
+        <ul>
+           { props.shows.map(show => (
+                <li key={show.id}>
+                    <Link href="/p/[id]" as={`/p/${show.id}`}>
+                        {show.name}
+                    </Link>
+                </li>
+            ))}
+        </ul>
+    </Layout>
 );
 
-const Blog = () => (
-    <div>
-        <Layout> 
-            <h1>My Blog</h1>
-            <ul>
-                <PostLink id="hello-next" />
-                <PostLink id="learn-next" />
-                <PostLink id="deploy-next" />
-            </ul>
-        </Layout>
-    </div>
-);
+Index.getInitialProps = async function() {
+    const res = await fetch('https://api.tvmaze.com/search/shows?q=batman');
+    const data = await res.json();
 
-export default Blog;
+    console.log(`Show data fetched. Count: ${data.length}`);
+
+    return {
+        shows: data.map(entry => entry.show)
+    };
+};
+
+export default Index;
